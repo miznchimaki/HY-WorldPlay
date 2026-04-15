@@ -36,6 +36,7 @@
 https://github.com/user-attachments/assets/9fd12b40-41ab-4201-8667-8b333db1123d
 
 ## 🔥 News
+- April 16, 2026: 🤗 We release [HY-World-2.0](https://github.com/Tencent-Hunyuan/HY-World-2.0), state-of-the-art 3D world model! 
 - March 8, 2026: 🚀 We release the RL post-training code 🧭 [WorldCompass](worldcompass/README.md) for WorldPlay-8B model (based on HY Video)! Read more in [our new paper](https://arxiv.org/abs/2602.09022).
 - January 6, 2026: 🚀 We release the training code for WorldPlay-8B model (based on HY Video), enabling the community to train and fine-tune their own world models!
 - January 6, 2026: 🎯 We open-source WorldPlay-5B model (based on WAN), a new lightweight model that fits into small-VRAM GPUs (but with compromised quality)!
