@@ -1,4 +1,9 @@
+#!/usr/bin/bash
+
+source ${HOME}/.bashrc
+cd ${HOME}/projects/HY-WorldPlay/
 export PYTHONPATH=$(cd "$(dirname "$0")" && pwd):$PYTHONPATH
+echo "Environment variable PYTHONPATH: ${PYTHONPATH}"
 
 export T2V_REWRITE_BASE_URL="<your_vllm_server_base_url>"
 export T2V_REWRITE_MODEL_NAME="<your_model_name>"
@@ -12,10 +17,11 @@ SEED=1
 ASPECT_RATIO=16:9
 RESOLUTION=480p # Now we only provide the 480p model
 OUTPUT_PATH=./outputs/
-MODEL_PATH=                   # Path to pretrained hunyuanvideo-1.5 model
-AR_ACTION_MODEL_PATH=         # Path to our HY-World 1.5 autoregressive checkpoints
-BI_ACTION_MODEL_PATH=         # Path to our HY-World 1.5 bidirectional checkpoints
-AR_DISTILL_ACTION_MODEL_PATH= # Path to our HY-World 1.5 autoregressive distilled checkpoints
+MODEL_PATH=${HOME}/.cache/huggingface/hub/models--tencent--HunyuanVideo-1.5/snapshots/9b49404b3f5df2a8f0b31df27a0c7ab872e7b038
+AR_ACTION_MODEL_PATH=${HOME}/.cache/huggingface/hub/models--tencent--HY-WorldPlay/snapshots/f4c29235647707b571479a69b569e4166f9f5bf8/ar_model/diffusion_pytorch_model.safetensors
+AR_RL_ACTION_MODEL_PATH=${HOME}/.cache/huggingface/hub/models--tencent--HY-WorldPlay/snapshots/f4c29235647707b571479a69b569e4166f9f5bf8/ar_rl_model/diffusion_pytorch_model.safetensors
+BI_ACTION_MODEL_PATH=${HOME}/.cache/huggingface/hub/models--tencent--HY-WorldPlay/snapshots/f4c29235647707b571479a69b569e4166f9f5bf8/bidirectional_model/diffusion_pytorch_model.safetensors
+AR_DISTILL_ACTION_MODEL_PATH=${HOME}/.cache/huggingface/hub/models--tencent--HY-WorldPlay/snapshots/f4c29235647707b571479a69b569e4166f9f5bf8/ar_distilled_action_model/diffusion_pytorch_model.safetensors
 POSE='w-31'                   # Camera trajectory: pose string (e.g., 'w-31' means generating [1 + 31] latents) or JSON file path
 NUM_FRAMES=125
 WIDTH=832
@@ -30,7 +36,8 @@ REWRITE=false   # Enable prompt rewriting. Please ensure rewrite vLLM server is 
 ENABLE_SR=false # Enable super resolution. When the NUM_FRAMES == 125, you can set it to true
 
 # inference with bidirectional model
-# torchrun --nproc_per_node=$N_INFERENCE_GPU hyvideo/generate.py  \
+# qwen3-vl -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
+#   --no_python qwen3vl-python hyvideo/generate.py  \
 #   --prompt "$PROMPT" \
 #   --image_path $IMAGE_PATH \
 #   --resolution $RESOLUTION \
@@ -47,7 +54,8 @@ ENABLE_SR=false # Enable super resolution. When the NUM_FRAMES == 125, you can s
 #   --model_type 'bi'
 
 # inference with autoregressive model
-# torchrun --nproc_per_node=$N_INFERENCE_GPU hyvideo/generate.py  \
+# qwen3vl-python -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
+#   --no_python qwen3vl-python hyvideo/generate.py  \
 #   --prompt "$PROMPT" \
 #   --image_path $IMAGE_PATH \
 #   --resolution $RESOLUTION \
@@ -66,7 +74,8 @@ ENABLE_SR=false # Enable super resolution. When the NUM_FRAMES == 125, you can s
 #   --model_type 'ar'
 
 # inference with autoregressive distilled model
-torchrun --nproc_per_node=$N_INFERENCE_GPU hyvideo/generate.py \
+qwen3vl-python -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
+  --no_python qwen3vl-python hyvideo/generate.py \
   --prompt "$PROMPT" \
   --image_path $IMAGE_PATH \
   --resolution $RESOLUTION \
