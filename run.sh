@@ -73,9 +73,9 @@ ENABLE_SR=false # Enable super resolution. When the NUM_FRAMES == 125, you can s
 #   --height $HEIGHT \
 #   --model_type 'ar'
 
-# inference with autoregressive distilled model
+# inference with autoregressive + RL model
 qwen3vl-python -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
-  --no_python qwen3vl-python hyvideo/generate.py \
+  --no_python qwen3vl-python hyvideo/generate.py  \
   --prompt "$PROMPT" \
   --image_path $IMAGE_PATH \
   --resolution $RESOLUTION \
@@ -87,11 +87,31 @@ qwen3vl-python -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
   --pose "$POSE" \
   --output_path $OUTPUT_PATH \
   --model_path $MODEL_PATH \
-  --action_ckpt $AR_DISTILL_ACTION_MODEL_PATH \
-  --few_step true \
-  --num_inference_steps 4 \
-  --model_type 'ar' \
-  --use_vae_parallel false \
-  --use_sageattn false \
-  --use_fp8_gemm false \
-  --transformer_resident_ar_rollout true
+  --action_ckpt ${AR_RL_ACTION_MODEL_PATH} \
+  --few_step false \
+  --width $WIDTH \
+  --height $HEIGHT \
+  --model_type 'ar'
+
+# inference with autoregressive distilled model
+# qwen3vl-python -m torch.distributed.run --nproc_per_node=${N_INFERENCE_GPU} \
+#   --no_python qwen3vl-python hyvideo/generate.py \
+#   --prompt "$PROMPT" \
+#   --image_path $IMAGE_PATH \
+#   --resolution $RESOLUTION \
+#   --aspect_ratio $ASPECT_RATIO \
+#   --video_length $NUM_FRAMES \
+#   --seed $SEED \
+#   --rewrite $REWRITE \
+#   --sr $ENABLE_SR --save_pre_sr_video \
+#   --pose "$POSE" \
+#   --output_path $OUTPUT_PATH \
+#   --model_path $MODEL_PATH \
+#   --action_ckpt $AR_DISTILL_ACTION_MODEL_PATH \
+#   --few_step true \
+#   --num_inference_steps 4 \
+#   --model_type 'ar' \
+#   --use_vae_parallel false \
+#   --use_sageattn false \
+#   --use_fp8_gemm false \
+#   --transformer_resident_ar_rollout true
