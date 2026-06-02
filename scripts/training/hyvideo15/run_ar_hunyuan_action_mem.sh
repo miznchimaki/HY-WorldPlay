@@ -1,3 +1,8 @@
+#!/usr/bin/bash
+
+
+source ${HOME}/.bashrc
+cd ${HOME}/projects/HY-WorldPlay/
 
 export WANDB_BASE_URL="https://api.wandb.ai"
 # export WANDB_MODE=online
@@ -93,11 +98,9 @@ miscellaneous_args=(
 
 export MASTER_PORT=29611
 
-torchrun \
-        --master_port=$MASTER_PORT \
-        --nproc_per_node=$NUM_GPUS \
-        --nnodes 1 \
-        trainer/training/ar_hunyuan_w_mem_training_pipeline.py \
+qwen3vl-python -m torch.distributed.run --master_port=${MASTER_PORT} \
+    --nproc_per_node=${NUM_GPUS} --nnodes 1 --no_python \
+    qwen3vl-python trainer/training/ar_hunyuan_w_mem_training_pipeline.py \
         "${parallel_args[@]}" \
         "${model_args[@]}" \
         "${dataset_args[@]}" \
