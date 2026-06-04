@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Model checkpoints and outputs
+**/*output*/**
 outputs/
 *.safetensors
 *.bin
